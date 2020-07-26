@@ -11,10 +11,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Completer<GoogleMapController> _controller = Completer();
+  CameraPosition _posicaoCamera = CameraPosition(
+    target: LatLng(-22.931738, -47.076785),
+    zoom: 17,
+  );
+
   Set<Marker> _marcadores = {};
   Set<Polygon> _polygons = {};
   Set<Polyline> _polylines = {};
-  Position _posicaoAtual;
 
   void _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete((googleMapController));
@@ -25,13 +29,13 @@ class _HomeState extends State<Home> {
     var googleMapController = await _controller.future;
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(-22.939208, -47.064586),
-          zoom: 16,
-          tilt: 45, // Angulo
-          bearing: 30, // Rotação
-        ),
-      ),
+          // CameraPosition(
+          //   target: LatLng(-22.939208, -47.064586),
+          //   zoom: 16,
+          //   tilt: 45, // Angulo
+          //   bearing: 30, // Rotação
+          // ),
+          _posicaoCamera),
     );
   }
 
@@ -153,7 +157,45 @@ class _HomeState extends State<Home> {
     print(posicao);
 
     setState(() {
-      _posicaoAtual = posicao;
+      _posicaoCamera = CameraPosition(
+        target: LatLng(posicao.latitude, posicao.longitude),
+        zoom: 17,
+      );
+      _movimentarCamera();
+    });
+  }
+
+  void _adicionarListenerLocalizacao() {
+    var geolocator = Geolocator();
+    var locationOptions = LocationOptions(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+
+    geolocator.getPositionStream(locationOptions).listen((position) {
+      // var marcadorUsuario = Marker(
+      //   markerId: MarkerId('marcador-usuario'),
+      //   position: LatLng(position.latitude, position.longitude),
+      //   infoWindow: InfoWindow(
+      //     title: 'Meu Local',
+      //   ),
+      //   icon: BitmapDescriptor.defaultMarkerWithHue(
+      //     BitmapDescriptor.hueBlue,
+      //   ),
+      //   rotation: 45,
+      //   onTap: () {
+      //     print('Meu local clicado');
+      //   },
+      // );
+
+      setState(() {
+        // _marcadores.add(marcadorUsuario);
+        _posicaoCamera = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 17,
+        );
+        _movimentarCamera();
+      });
     });
   }
 
@@ -163,7 +205,8 @@ class _HomeState extends State<Home> {
     // _carregarMarcadores();
     // _carregarPolygons();
     // _carregarPolylines();
-    _recuperarLocalizacaoAtual();
+    // _recuperarLocalizacaoAtual();
+    _adicionarListenerLocalizacao();
   }
 
   @override
@@ -181,14 +224,12 @@ class _HomeState extends State<Home> {
         child: GoogleMap(
           mapType: MapType.normal,
           // mapType: MapType.hybrid,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(-22.931738, -47.076785),
-            zoom: 16,
-          ),
+          initialCameraPosition: _posicaoCamera,
           onMapCreated: _onMapCreated,
           markers: _marcadores,
           polygons: _polygons,
           polylines: _polylines,
+          myLocationEnabled: true,
         ),
       ),
     );
