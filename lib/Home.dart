@@ -11,6 +11,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _marcadores = {};
+  Set<Polygon> _polygons = {};
 
   void _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete((googleMapController));
@@ -68,10 +69,57 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _carregarPolygons() {
+    Set<Polygon> listaPolygons = {};
+    Polygon polygon1 = Polygon(
+      polygonId: PolygonId('polygon1'),
+      fillColor: Colors.green,
+      // fillColor: Colors.transparent,
+      strokeColor: Colors.red,
+      strokeWidth: 10,
+      points: [
+        LatLng(-22.933545, -47.078211),
+        LatLng(-22.930630, -47.078690),
+        LatLng(-22.932893, -47.075750)
+      ],
+      consumeTapEvents: true,
+      onTap: () {
+        print('clicado!');
+      },
+      zIndex: 0,
+    );
+
+    Polygon polygon2 = Polygon(
+      polygonId: PolygonId('polygon1'),
+      fillColor: Colors.purple,
+      // fillColor: Colors.transparent,
+      strokeColor: Colors.orange,
+      strokeWidth: 10,
+      points: [
+        LatLng(-22.931025, -47.075578),
+        LatLng(-22.932359, -47.080395),
+        LatLng(-22.933149, -47.079837),
+      ],
+      consumeTapEvents: true,
+      onTap: () {
+        print('clicado!');
+      },
+      zIndex: 1,
+    );
+
+    listaPolygons.add(polygon1);
+    listaPolygons.add(polygon2);
+
+    setState(() {
+      _polygons = listaPolygons;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _carregarMarcadores();
+    // _carregarMarcadores();
+    _carregarPolygons();
   }
 
   @override
@@ -95,6 +143,7 @@ class _HomeState extends State<Home> {
           ),
           onMapCreated: _onMapCreated,
           markers: _marcadores,
+          polygons: _polygons,
         ),
       ),
     );
