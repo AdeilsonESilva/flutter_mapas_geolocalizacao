@@ -199,6 +199,48 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _recuperarLocalParaEndereco() async {
+    var listaEnderecos =
+        await Geolocator().placemarkFromAddress('Campinas Shopping');
+
+    if (listaEnderecos.length > 0) {
+      var item = listaEnderecos[0];
+      String resultado = "administrativeArea - ${item.administrativeArea}\n"
+          "subAdministrativeArea - ${item.subAdministrativeArea}\n"
+          "locality - ${item.locality}\n"
+          "subLocality - ${item.subLocality}\n"
+          "thoroughfare - ${item.thoroughfare}\n"
+          "subThoroughfare - ${item.subThoroughfare}\n"
+          "postalCode - ${item.postalCode}\n"
+          "country - ${item.country}\n"
+          "isoCountryCode - ${item.isoCountryCode}\n"
+          "position - ${item.position}\n";
+
+      print(resultado);
+    }
+  }
+
+  void _recuperarLocalParaLatLong() async {
+    var listaEnderecos =
+        await Geolocator().placemarkFromCoordinates(-22.934858, -47.087944);
+
+    if (listaEnderecos.length > 0) {
+      var item = listaEnderecos[0];
+      String resultado = "administrativeArea - ${item.administrativeArea}\n"
+          "subAdministrativeArea - ${item.subAdministrativeArea}\n"
+          "locality - ${item.locality}\n"
+          "subLocality - ${item.subLocality}\n"
+          "thoroughfare - ${item.thoroughfare}\n"
+          "subThoroughfare - ${item.subThoroughfare}\n"
+          "postalCode - ${item.postalCode}\n"
+          "country - ${item.country}\n"
+          "isoCountryCode - ${item.isoCountryCode}\n"
+          "position - ${item.position}\n";
+
+      print(resultado);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -206,7 +248,9 @@ class _HomeState extends State<Home> {
     // _carregarPolygons();
     // _carregarPolylines();
     // _recuperarLocalizacaoAtual();
-    _adicionarListenerLocalizacao();
+    // _adicionarListenerLocalizacao();
+    // _recuperarLocalParaEndereco();
+    _recuperarLocalParaLatLong();
   }
 
   @override
