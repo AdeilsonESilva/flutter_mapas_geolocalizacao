@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _HomeState extends State<Home> {
   Set<Marker> _marcadores = {};
   Set<Polygon> _polygons = {};
   Set<Polyline> _polylines = {};
+  Position _posicaoAtual;
 
   void _onMapCreated(GoogleMapController googleMapController) {
     _controller.complete((googleMapController));
@@ -144,12 +146,24 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _recuperarLocalizacaoAtual() async {
+    var posicao = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    print(posicao);
+
+    setState(() {
+      _posicaoAtual = posicao;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     // _carregarMarcadores();
     // _carregarPolygons();
-    _carregarPolylines();
+    // _carregarPolylines();
+    _recuperarLocalizacaoAtual();
   }
 
   @override
